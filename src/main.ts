@@ -1281,6 +1281,11 @@ export default class RecipeVault extends Plugin {
       }
     });
 
+    // Ribbon icon for writing a recipe by hand (same as "Add recipe (manual)")
+    this.addRibbonIcon("file-plus", "Add recipe (manual)", () => {
+      this.openNewRecipeModal();
+    });
+
     // This adds a simple command that can be triggered anywhere
     this.addCommand({
       id: c.CMD_OPEN_MODAL,
@@ -1609,11 +1614,7 @@ export default class RecipeVault extends Plugin {
     this.addCommand({
       id: c.CMD_NEW_RECIPE_STUB,
       name: "Add recipe (manual)",
-      callback: () => {
-        new NewRecipeModal(this.app, (recipeName) => {
-          void this.createRecipeStub(recipeName);
-        }).open();
-      },
+      callback: () => this.openNewRecipeModal(),
     });
 
     // Only in the palette with nutrition turned on.
@@ -2158,6 +2159,13 @@ export default class RecipeVault extends Plugin {
       new Notice(`Recipe import failed: ${msg}`, 10000);
     }
   };
+
+  /** Ask for a name, then create a blank recipe note from the template. */
+  private openNewRecipeModal(): void {
+    new NewRecipeModal(this.app, (recipeName) => {
+      void this.createRecipeStub(recipeName);
+    }).open();
+  }
 
   /**
    * Creates a manual recipe note from the current template and opens it for editing.
